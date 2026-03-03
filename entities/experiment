@@ -1,0 +1,94 @@
+{
+    "name": "Experiment",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "project": {
+            "type": "string"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "draft",
+                "queued",
+                "running",
+                "completed",
+                "failed",
+                "canceled"
+            ],
+            "default": "draft"
+        },
+        "git_commit": {
+            "type": "string"
+        },
+        "framework": {
+            "type": "string",
+            "enum": [
+                "pytorch",
+                "tensorflow",
+                "jax",
+                "huggingface",
+                "custom"
+            ]
+        },
+        "container_image": {
+            "type": "string"
+        },
+        "dataset_version": {
+            "type": "string"
+        },
+        "hyperparameters": {
+            "type": "object"
+        },
+        "gpu_count": {
+            "type": "number"
+        },
+        "gpu_type": {
+            "type": "string"
+        },
+        "cpu_count": {
+            "type": "number"
+        },
+        "memory_gb": {
+            "type": "number"
+        },
+        "duration_seconds": {
+            "type": "number"
+        },
+        "metrics": {
+            "type": "object"
+        },
+        "tags": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "description": {
+            "type": "string"
+        },
+        "priority": {
+            "type": "string",
+            "enum": [
+                "low",
+                "normal",
+                "high",
+                "critical"
+            ],
+            "default": "normal"
+        },
+        "team": {
+            "type": "string"
+        },
+        "node_count": {
+            "type": "number",
+            "default": 1
+        }
+    },
+    "required": [
+        "name",
+        "project"
+    ]
+}

@@ -1,0 +1,60 @@
+{
+    "name": "Model",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        },
+        "stage": {
+            "type": "string",
+            "enum": [
+                "draft",
+                "validated",
+                "staging",
+                "production",
+                "archived"
+            ],
+            "default": "draft"
+        },
+        "experiment_id": {
+            "type": "string"
+        },
+        "framework": {
+            "type": "string"
+        },
+        "metrics": {
+            "type": "object"
+        },
+        "artifact_url": {
+            "type": "string"
+        },
+        "dataset_version": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "approved_by": {
+            "type": "string"
+        },
+        "tags": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "size_mb": {
+            "type": "number"
+        },
+        "project": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "name",
+        "version"
+    ]
+}

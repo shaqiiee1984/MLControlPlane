@@ -1,0 +1,65 @@
+{
+    "name": "Pipeline",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "ci",
+                "cd",
+                "training",
+                "evaluation"
+            ],
+            "default": "ci"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "pending",
+                "running",
+                "success",
+                "failed",
+                "canceled"
+            ],
+            "default": "pending"
+        },
+        "git_branch": {
+            "type": "string"
+        },
+        "git_commit": {
+            "type": "string"
+        },
+        "trigger": {
+            "type": "string",
+            "enum": [
+                "manual",
+                "push",
+                "pull_request",
+                "schedule"
+            ],
+            "default": "manual"
+        },
+        "project": {
+            "type": "string"
+        },
+        "duration_seconds": {
+            "type": "number"
+        },
+        "stages": {
+            "type": "array",
+            "items": {
+                "type": "object"
+            }
+        },
+        "logs_url": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "name",
+        "type"
+    ]
+}

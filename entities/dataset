@@ -1,0 +1,61 @@
+{
+    "name": "Dataset",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "source_url": {
+            "type": "string"
+        },
+        "schema": {
+            "type": "object"
+        },
+        "size_gb": {
+            "type": "number"
+        },
+        "row_count": {
+            "type": "number"
+        },
+        "format": {
+            "type": "string",
+            "enum": [
+                "parquet",
+                "csv",
+                "jsonl",
+                "tfrecord",
+                "hdf5",
+                "images",
+                "other"
+            ]
+        },
+        "tags": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "project": {
+            "type": "string"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "active",
+                "deprecated",
+                "archived"
+            ],
+            "default": "active"
+        }
+    },
+    "required": [
+        "name",
+        "version"
+    ]
+}
