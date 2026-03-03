@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/clients";
 import { Plus, Search, Play, CheckCircle2, XCircle, Clock, Circle, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -49,7 +49,7 @@ export default function Pipelines() {
     const [form, setForm] = useState({ name: "", type: "ci", git_branch: "main", git_commit: "", project: "", trigger: "manual" });
 
     useEffect(() => {
-        base44.entities.Pipeline.list("-created_date", 100).then(data => {
+        apiClient.entities.Pipeline.list("-created_date", 100).then(data => {
             setPipelines(data);
             setLoading(false);
         });
@@ -57,13 +57,13 @@ export default function Pipelines() {
 
     const handleCreate = async (e) => {
         e.preventDefault();
-        const created = await base44.entities.Pipeline.create({ ...form, status: "pending" });
+        const created = await apiClient.entities.Pipeline.create({ ...form, status: "pending" });
         setPipelines(prev => [created, ...prev]);
         setShowForm(false);
     };
 
     const handleDelete = async (id) => {
-        await base44.entities.Pipeline.delete(id);
+        await apiClient.entities.Pipeline.delete(id);
         setPipelines(prev => prev.filter(p => p.id !== id));
     };
 

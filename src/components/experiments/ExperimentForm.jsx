@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/clients";
 import { X, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,7 +43,7 @@ export default function ExperimentForm({ onClose, onCreated }) {
         const hp = {};
         hparams.forEach(({ key, value }) => { if (key) hp[key] = value; });
         const payload = { ...form, hyperparameters: hp };
-        const created = await base44.entities.Experiment.create(payload);
+        const created = await apiClient.entities.Experiment.create(payload);
         setSaving(false);
         onCreated(created);
         onClose();

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/clients";
 import { Plus, Search, ArrowRight, ChevronDown, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ function PromoteButton({ model, onUpdate }) {
         <button
             onClick={async (e) => {
                 e.stopPropagation();
-                const updated = await base44.entities.Model.update(model.id, { stage: next });
+                const updated = await apiClient.entities.Model.update(model.id, { stage: next });
                 onUpdate(updated);
             }}
             className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 whitespace-nowrap"
@@ -37,7 +37,7 @@ export default function ModelRegistry() {
     const [form, setForm] = useState({ name: "", version: "", framework: "", description: "", project: "" });
 
     const load = () => {
-        base44.entities.Model.list("-created_date", 100).then(data => {
+        apiClient.entities.Model.list("-created_date", 100).then(data => {
             setModels(data);
             setLoading(false);
         });
@@ -47,7 +47,7 @@ export default function ModelRegistry() {
 
     const handleCreate = async (e) => {
         e.preventDefault();
-        const created = await base44.entities.Model.create({ ...form, stage: "draft" });
+        const created = await apiClient.entities.Model.create({ ...form, stage: "draft" });
         setModels(prev => [created, ...prev]);
         setShowForm(false);
         setForm({ name: "", version: "", framework: "", description: "", project: "" });
@@ -59,7 +59,7 @@ export default function ModelRegistry() {
 
     const handleDelete = async (e, id) => {
         e.stopPropagation();
-        await base44.entities.Model.delete(id);
+        await apiClient.entities.Model.delete(id);
         setModels(prev => prev.filter(m => m.id !== id));
     };
 

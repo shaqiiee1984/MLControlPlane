@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/clients";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
@@ -45,10 +45,10 @@ export default function Dashboard() {
 
     useEffect(() => {
         Promise.all([
-            base44.entities.Experiment.list("-created_date", 50),
-            base44.entities.Model.list("-created_date", 20),
-            base44.entities.Dataset.list("-created_date", 10),
-            base44.entities.Pipeline.list("-created_date", 20),
+            apiClient.entities.Experiment.list("-created_date", 50),
+            apiClient.entities.Model.list("-created_date", 20),
+            apiClient.entities.Dataset.list("-created_date", 10),
+            apiClient.entities.Pipeline.list("-created_date", 20),
         ]).then(([exps, mods, dsets, pipes]) => {
             setExperiments(exps);
             setModels(mods);

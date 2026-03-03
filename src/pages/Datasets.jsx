@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/clients";
 import { Plus, Search, Database, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ export default function Datasets() {
     const [form, setForm] = useState({ name: "", version: "", description: "", format: "parquet", project: "" });
 
     useEffect(() => {
-        base44.entities.Dataset.list("-created_date", 100).then(data => {
+        apiClient.entities.Dataset.list("-created_date", 100).then(data => {
             setDatasets(data);
             setLoading(false);
         });
@@ -25,14 +25,14 @@ export default function Datasets() {
 
     const handleCreate = async (e) => {
         e.preventDefault();
-        const created = await base44.entities.Dataset.create({ ...form, status: "active" });
+        const created = await apiClient.entities.Dataset.create({ ...form, status: "active" });
         setDatasets(prev => [created, ...prev]);
         setShowForm(false);
         setForm({ name: "", version: "", description: "", format: "parquet", project: "" });
     };
 
     const handleDelete = async (id) => {
-        await base44.entities.Dataset.delete(id);
+        await apiClient.entities.Dataset.delete(id);
         setDatasets(prev => prev.filter(d => d.id !== id));
     };
 

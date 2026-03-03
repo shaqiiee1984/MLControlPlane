@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/clients";
 import { Plus, Search, Filter, SlidersHorizontal, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ export default function Experiments() {
     const [fwFilter, setFwFilter] = useState("all");
 
     const load = () => {
-        base44.entities.Experiment.list("-created_date", 100).then(data => {
+        apiClient.entities.Experiment.list("-created_date", 100).then(data => {
             setExperiments(data);
             setLoading(false);
         });
@@ -32,7 +32,7 @@ export default function Experiments() {
 
     const handleDelete = async (e, id) => {
         e.stopPropagation();
-        await base44.entities.Experiment.delete(id);
+        await apiClient.entities.Experiment.delete(id);
         setExperiments(prev => prev.filter(ex => ex.id !== id));
     };
 

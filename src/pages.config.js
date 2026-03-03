@@ -55,7 +55,7 @@ import ModelRegistry from './pages/ModelRegistry';
 import Monitoring from './pages/Monitoring';
 import Pipelines from './pages/Pipelines';
 import Settings from './pages/Settings';
-import __Layout from './Layout.jsx';
+import __Layout from './layout.jsx';
 
 
 export const PAGES = {
