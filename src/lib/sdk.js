@@ -1,5 +1,8 @@
 // Minimal local SDK shim to avoid external @base44 dependency.
 // Provides `createClient` and `createAxiosClient` with a lightweight fetch-based implementation.
+// Falls back to the localStorage mock store when the API is unavailable.
+
+import { mockStore } from './mock-store';
 
 export function createAxiosClient({ baseURL = '', headers = {}, token = undefined, interceptResponses = false } = {}) {
 	const call = async (method, path, opts = {}) => {
@@ -33,16 +36,67 @@ export function createAxiosClient({ baseURL = '', headers = {}, token = undefine
 	};
 }
 
-export function createClient({ appId, token, functionsVersion, serverUrl = '', requiresAuth = false, appBaseUrl = '' } = {}) {
-	const base = appBaseUrl || '';
+// ── Entity proxy backed by mock store (with optional real-API passthrough) ──
 
+function makeEntityProxy() {
+	return new Proxy({}, {
+		get(_, entityName) {
+			const store = mockStore(entityName);
+			return {
+				list: async (sort, limit) => {
+					// Try real API first; fall back to mock on failure or empty
+					try {
+						const qs = [];
+						if (sort) qs.push(`sort=${encodeURIComponent(sort)}`);
+						if (limit) qs.push(`limit=${encodeURIComponent(limit)}`);
+						const q = qs.length ? `?${qs.join('&')}` : '';
+						const res = await fetch(`/api/entities/${entityName}${q}`);
+						if (res.ok) {
+							const data = await res.json();
+							if (Array.isArray(data) && data.length > 0) return data;
+						}
+					} catch (_) { /* no backend – fall through to mock */ }
+					return store.list(sort, limit);
+				},
+				create: async (body) => {
+					try {
+						const res = await fetch(`/api/entities/${entityName}`, {
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify(body),
+						});
+						if (res.ok) return res.json();
+					} catch (_) { /* no backend */ }
+					return store.create(body);
+				},
+				update: async (id, body) => {
+					try {
+						const res = await fetch(`/api/entities/${entityName}/${id}`, {
+							method: 'PUT',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify(body),
+						});
+						if (res.ok) return res.json();
+					} catch (_) { /* no backend */ }
+					return store.update(id, body);
+				},
+				delete: async (id) => {
+					try {
+						await fetch(`/api/entities/${entityName}/${id}`, { method: 'DELETE' });
+					} catch (_) { /* no backend */ }
+					return store.delete(id);
+				},
+			};
+		}
+	});
+}
+
+export function createClient({ appId, token, functionsVersion, serverUrl = '', requiresAuth = false, appBaseUrl = '' } = {}) {
 	const auth = {
 		me: async () => {
-			// attempt relative endpoint first
 			try {
 				return await fetch('/api/auth/me').then(r => r.ok ? r.json() : Promise.reject(r));
 			} catch (e) {
-				// no backend available; return null
 				throw { status: 401, message: 'Not authenticated' };
 			}
 		},
@@ -56,39 +110,7 @@ export function createClient({ appId, token, functionsVersion, serverUrl = '', r
 		}
 	};
 
-	const entities = new Proxy({}, {
-		get(_, entityName) {
-			return {
-				list: async (sort, limit) => {
-					const qs = [];
-					if (sort) qs.push(`sort=${encodeURIComponent(sort)}`);
-					if (limit) qs.push(`limit=${encodeURIComponent(limit)}`);
-					const q = qs.length ? `?${qs.join('&')}` : '';
-					try {
-						const res = await fetch(`/api/entities/${entityName}${q}`);
-						if (!res.ok) return [];
-						return await res.json();
-					} catch (e) {
-						return [];
-					}
-				},
-				create: async (body) => {
-					const res = await fetch(`/api/entities/${entityName}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-					if (!res.ok) throw new Error('Create failed');
-					return res.json();
-				},
-				update: async (id, body) => {
-					const res = await fetch(`/api/entities/${entityName}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-					if (!res.ok) throw new Error('Update failed');
-					return res.json();
-				},
-				delete: async (id) => {
-					await fetch(`/api/entities/${entityName}/${id}`, { method: 'DELETE' });
-					return true;
-				}
-			};
-		}
-	});
+	const entities = makeEntityProxy();
 
 	return { auth, entities };
 }

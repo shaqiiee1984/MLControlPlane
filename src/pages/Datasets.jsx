@@ -14,7 +14,7 @@ export default function Datasets() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [showForm, setShowForm] = useState(false);
-    const [form, setForm] = useState({ name: "", version: "", description: "", format: "parquet", project: "" });
+    const [form, setForm] = useState({ name: "", version: "", description: "", format: "parquet", project: "", source_url: "", size_gb: "", row_count: "", tags: "" });
 
     useEffect(() => {
         apiClient.entities.Dataset.list("-created_date", 100).then(data => {
@@ -25,10 +25,16 @@ export default function Datasets() {
 
     const handleCreate = async (e) => {
         e.preventDefault();
-        const created = await apiClient.entities.Dataset.create({ ...form, status: "active" });
+        const created = await apiClient.entities.Dataset.create({
+            ...form,
+            status: "active",
+            size_gb: form.size_gb ? Number(form.size_gb) : undefined,
+            row_count: form.row_count ? Number(form.row_count) : undefined,
+            tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+        });
         setDatasets(prev => [created, ...prev]);
         setShowForm(false);
-        setForm({ name: "", version: "", description: "", format: "parquet", project: "" });
+        setForm({ name: "", version: "", description: "", format: "parquet", project: "", source_url: "", size_gb: "", row_count: "", tags: "" });
     };
 
     const handleDelete = async (id) => {
@@ -101,6 +107,13 @@ export default function Datasets() {
                             {ds.description && (
                                 <p className="text-xs text-zinc-500 mb-3 line-clamp-2">{ds.description}</p>
                             )}
+                            {ds.tags?.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mb-3">
+                                    {ds.tags.slice(0, 3).map(t => (
+                                        <span key={t} className="px-1.5 py-0.5 rounded bg-white/5 text-xs text-zinc-500">{t}</span>
+                                    ))}
+                                </div>
+                            )}
                             <div className="flex items-center justify-between text-xs text-zinc-600">
                                 <span>{ds.size_gb ? `${ds.size_gb} GB` : ""}</span>
                                 <span>{ds.row_count ? `${ds.row_count.toLocaleString()} rows` : ""}</span>
@@ -124,6 +137,7 @@ export default function Datasets() {
                                 { key: "name", label: "Dataset Name", required: true, placeholder: "imagenet-clean" },
                                 { key: "version", label: "Version", required: true, placeholder: "2.4.1" },
                                 { key: "project", label: "Project", placeholder: "vision-core" },
+                                { key: "source_url", label: "Source URL", placeholder: "s3://bucket/path" },
                                 { key: "description", label: "Description", placeholder: "Optional…" },
                             ].map(({ key, label, required, placeholder }) => (
                                 <div key={key}>
@@ -137,6 +151,28 @@ export default function Datasets() {
                                     />
                                 </div>
                             ))}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-xs text-zinc-400 mb-1.5">Size (GB)</label>
+                                    <Input
+                                        type="number" min={0} step="0.1"
+                                        value={form.size_gb}
+                                        onChange={e => setForm(f => ({ ...f, size_gb: e.target.value }))}
+                                        placeholder="142.4"
+                                        className="bg-[#18181b] border-[#27272a] text-white text-sm placeholder:text-zinc-600 focus:border-indigo-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs text-zinc-400 mb-1.5">Row Count</label>
+                                    <Input
+                                        type="number" min={0}
+                                        value={form.row_count}
+                                        onChange={e => setForm(f => ({ ...f, row_count: e.target.value }))}
+                                        placeholder="1000000"
+                                        className="bg-[#18181b] border-[#27272a] text-white text-sm placeholder:text-zinc-600 focus:border-indigo-500"
+                                    />
+                                </div>
+                            </div>
                             <div>
                                 <label className="block text-xs text-zinc-400 mb-1.5">Format</label>
                                 <select
@@ -146,6 +182,15 @@ export default function Datasets() {
                                 >
                                     {FORMATS.map(f => <option key={f} value={f}>{f}</option>)}
                                 </select>
+                            </div>
+                            <div>
+                                <label className="block text-xs text-zinc-400 mb-1.5">Tags <span className="text-zinc-600">(comma-separated)</span></label>
+                                <Input
+                                    value={form.tags}
+                                    onChange={e => setForm(f => ({ ...f, tags: e.target.value }))}
+                                    placeholder="vision, classification, curated"
+                                    className="bg-[#18181b] border-[#27272a] text-white text-sm placeholder:text-zinc-600 focus:border-indigo-500"
+                                />
                             </div>
                             <div className="flex justify-end gap-3 pt-2">
                                 <Button type="button" variant="ghost" onClick={() => setShowForm(false)} className="text-zinc-400">Cancel</Button>

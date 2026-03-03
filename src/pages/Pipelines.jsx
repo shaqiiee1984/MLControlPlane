@@ -45,6 +45,7 @@ export default function Pipelines() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [typeFilter, setTypeFilter] = useState("all");
+    const [statusFilter, setStatusFilter] = useState("all");
     const [showForm, setShowForm] = useState(false);
     const [form, setForm] = useState({ name: "", type: "ci", git_branch: "main", git_commit: "", project: "", trigger: "manual" });
 
@@ -70,10 +71,12 @@ export default function Pipelines() {
     const filtered = pipelines.filter(p => {
         const matchSearch = !search || p.name?.toLowerCase().includes(search.toLowerCase());
         const matchType = typeFilter === "all" || p.type === typeFilter;
-        return matchSearch && matchType;
+        const matchStatus = statusFilter === "all" || p.status === statusFilter;
+        return matchSearch && matchType && matchStatus;
     });
 
     const types = ["all", "ci", "cd", "training", "evaluation"];
+    const statuses = ["all", "pending", "running", "success", "failed", "canceled"];
 
     return (
         <div className="p-6 max-w-[1400px] mx-auto space-y-5">
@@ -99,7 +102,7 @@ export default function Pipelines() {
                         className="pl-9 bg-[#111113] border-[#27272a] text-white placeholder:text-zinc-600 focus:border-indigo-500 text-sm"
                     />
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                     {types.map(t => (
                         <button
                             key={t}
@@ -112,6 +115,22 @@ export default function Pipelines() {
                             )}
                         >
                             {t}
+                        </button>
+                    ))}
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                    {statuses.map(s => (
+                        <button
+                            key={s}
+                            onClick={() => setStatusFilter(s)}
+                            className={cn(
+                                "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
+                                statusFilter === s
+                                    ? "bg-indigo-500 text-white"
+                                    : "bg-[#111113] border border-[#27272a] text-zinc-400 hover:text-zinc-200"
+                            )}
+                        >
+                            {s}
                         </button>
                     ))}
                 </div>
