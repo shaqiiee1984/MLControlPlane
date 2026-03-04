@@ -115,7 +115,7 @@ Applied hardened engineering practices throughout the full stack:
 └───────────────┬─────────────────────────────────────────────────┘
                 │ REST / WebSocket
 ┌───────────────▼─────────────────────────────────────────────────┐
-│              Spring Boot API Layer (Java 17)                     │
+│              Spring Boot API Layer (Java 17)                    │
 │  Idempotency keys · Resilience4j circuit breakers               │
 │  Distributed tracing (correlation IDs) · OpenAPI docs           │
 └──────┬────────────────┬────────────────────────┬────────────────┘
@@ -128,12 +128,12 @@ Applied hardened engineering practices throughout the full stack:
 └─────────────┘                        └────────────────┘
        │
 ┌──────▼──────────────────────────────────────────────────────────┐
-│              Kubernetes Cluster (GPU Infrastructure)             │
+│              Kubernetes Cluster (GPU Infrastructure)            │
 │  Training workers · HPA · Node affinity · Quota enforcement     │
 └───────────────┬─────────────────────────────────────────────────┘
                 │
 ┌───────────────▼─────────────────────────────────────────────────┐
-│         Prometheus + Grafana (Observability Stack)               │
+│         Prometheus + Grafana (Observability Stack)              │
 │  Custom alerting rules · SLO dashboards · Metric pipelines      │
 └─────────────────────────────────────────────────────────────────┘
 ```
