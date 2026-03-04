@@ -121,9 +121,9 @@ Applied hardened engineering practices throughout the full stack:
 └──────┬────────────────┬────────────────────────┬────────────────┘
        │                │                        │
 ┌──────▼──────┐  ┌──────▼──────┐       ┌────────▼───────┐
-│ PostgreSQL  │  │    Redis     │       │ Object Storage │
-│ Experiment  │  │  Task queue  │       │  Model weights │
-│ metadata &  │  │  Caching     │       │  Dataset files │
+│ PostgreSQL  │  │    Redis    │       │ Object Storage │
+│ Experiment  │  │  Task queue │       │  Model weights │
+│ metadata &  │  │  Caching    │       │  Dataset files │
 │ lineage DAGs│  └─────────────┘       │  Eval reports  │
 └─────────────┘                        └────────────────┘
        │
