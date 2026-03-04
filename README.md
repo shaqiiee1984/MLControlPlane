@@ -15,6 +15,38 @@ The platform is architected to scale to **thousands of training jobs per day** a
 
 ---
 
+## 🖼️ Product Gallery
+
+### **Main Dashboard**
+Centralized overview of cluster health, active training jobs, and aggregate experiment metrics.
+![Dashboard](./screenshots/dashboard.png)
+
+### **Experiment Management**
+Deep-dive into training runs with hyperparameter tracking and priority-aware job queuing.
+![Experiments](./screenshots/experiments.png)
+
+### **Model Registry**
+Controlled lifecycle management from draft to production with automated promotion gates.
+![Model Registry](./screenshots/model_registry.png)
+
+### **Dataset Catalog**
+Versioned data artifacts with lineage tracking and format-specific metadata.
+![Datasets](./screenshots/datasets.png)
+
+### **Pipeline Execution**
+Real-time visualization of CI/CD, training, and evaluation workflows.
+![Pipelines](./screenshots/pipelines.png)
+
+### **GPU Compute Governance**
+Team-level quota management and fair-share resource allocation.
+![Compute](./screenshots/compute.png)
+
+### **Cluster Observability**
+High-fidelity monitoring of node health and GPU utilization.
+![Monitoring](./screenshots/monitoring.png)
+
+---
+
 ## Key Engineering Contributions
 
 ### 🧪 Experiment Orchestration Engine
